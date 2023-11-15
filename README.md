@@ -33,7 +33,7 @@ Information includes:
 
 ## Project outline
 
-![](https://drive.google.com/file/d/1UehRCVG-cxNmUzaRtuXfh2iR-51a9kaG/view?usp=sharing)
+![](https://drive.google.com/uc?export=view&id=1UehRCVG-cxNmUzaRtuXfh2iR-51a9kaG)
 
 ## Run docker compose
 
