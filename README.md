@@ -35,6 +35,10 @@ Information includes:
 
 ![](https://drive.google.com/uc?export=view&id=1UehRCVG-cxNmUzaRtuXfh2iR-51a9kaG)
 
+## Database diaograms
+
+![](https://drive.google.com/uc?export=view&id=1GmMzrOFkA0xkEcbtSVRbH7Wv3a_y1IIw)
+
 ## Run docker compose
 
 - Rename the `.env.example` file to `.env` and pass the variables their values
