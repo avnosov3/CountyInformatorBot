@@ -1,0 +1,138 @@
+version: "3.9"
+
+services:
+
+  db:
+    container_name: postgres
+    image: postgres:15.1-alpine
+    restart: always
+    environment:
+      PGUSER: ${DB_USER}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_HOST_AUTH_METHOD: ${POSTGRES_HOST_AUTH_METHOD}
+      POSTGRES_INITDB_ARGS: ${POSTGRES_INITDB_ARGS}
+    ports:
+      - ${DB_PORT:-5432}:5432
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    container_name: adminer
+    image: adminer:4.8.1-standalone
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  redis:
+    container_name: redis
+    image: redis:7.2.1-alpine
+    restart: always
+    ports:
+      - ${REDIS_PORT:-6379}:6379
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    image: ylab-backend:1.0
+    container_name: ylab-backend
+    restart: always
+    build:
+      context: ./backend
+      dockerfile: docker/Dockerfile
+    entrypoint: /app/backend_entrypoint.sh
+    # entrypoint: ["bash", "./backend_entrypoint.sh"]
+    env_file:
+      - ./.env
+    ports:
+      - ${API_PORT:-8000}:8000
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  worker:
+    image: ylab-worker:1.0
+    container_name: ylab-worker
+    restart: on-failure
+    build:
+      context: ./backend
+      dockerfile: docker/Dockerfile
+    command: bash -c 'celery -A core worker -l info'
+    env_file:
+      - ./.env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: celery -A core.celery.app status
+      interval: 30s
+      timeout: 30s
+      retries: 2
+
+  beat:
+    image: ylab-beat:1.0
+    container_name: ylab-beat
+    restart: on-failure
+    build:
+      context: ./backend
+      dockerfile: docker/Dockerfile
+    command: bash -c 'celery -A core beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler'
+    env_file:
+      - ./.env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  flower:
+    image: mher/flower
+    restart: always
+    environment:
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL}
+    ports:
+      - ${FLOWER_PORT:-5555}:5555
+    volumes:
+      - flower_data:/data/
+    depends_on:
+      worker:
+        condition: service_healthy
+
+  # bot:
+  #   image: ylab-bot:1.0
+  #   container_name: telegram-bot
+  #   build:
+  #     context: ./bot
+  #     dockerfile: docker/Dockerfile
+  #   restart: always
+  #   command: bash -c 'python3 -m src.main'
+  #   # entrypoint: /app/bot_entrypoint.sh
+  #   env_file:
+  #     - ./.env
+
+
+volumes:
+  postgres:
+    name: ylab-postgres
+  redis_data:
+    name: ylab-redis-data
+  flower_data:
+    name: ylab-flower-data
