@@ -1,5 +1,5 @@
 # Countries Informator Bot
-![Static Badge](https://img.shields.io/badge/Language-Python_3.11-blue)
+![Static Badge](https://img.shields.io/badge/Language-Python_3.10-blue)
 ![Static Badge](https://img.shields.io/badge/Framework-Django_Ninja-3CB371)
 ![Static Badge](https://img.shields.io/badge/SQL_Database-PostgreSQL-6495ED)
 ![Static Badge](https://img.shields.io/badge/ORM-Django_ORM-DC143C)
