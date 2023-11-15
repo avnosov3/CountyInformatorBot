@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "ylab-bot"
+version = "0.1.0"
+description = ""
+authors = []
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+aiogram = "^3.1.1"
+pydantic-settings = "^2.0.3"
+pre-commit = "^3.4.0"
+httpx = "^0.25.0"
+redis = "^5.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.ruff]
+line-length = 120
+src = ['src']
+select = [
+    "E", # pycodestyle
+    "F", # pyflakes
+    "N", # pep8-naming
+    "ASYNC", # flake8-async
+    "T20", # flake8-print
+]
+ignore = ["N805", "N806"]
+
+[tool.isort]
+src_paths = ["src"]
+
+[tool.black]
+line-length = 120

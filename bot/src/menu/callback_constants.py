@@ -1,0 +1,5 @@
+COME_BACK_TO_MAIN_MENU = "come_back_to_main_menu"
+FIND_COUNTRY = "find_country"
+FIND_CITY = "find_city"
+FIND_WEATHER = "find_weather"
+FIND_CURRENCY = "find_currency"
