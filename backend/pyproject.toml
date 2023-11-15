@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "ylab-django"
+version = "0.1.0"
+description = ""
+authors = []
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = "4.1"
+django-ninja = "^0.22.2"
+uvicorn = "^0.23.2"
+psycopg2-binary = "^2.9.7"
+django-environ = "^0.11.2"
+pre-commit = "^3.4.0"
+httpx = "^0.25.0"
+celery = "^5.3.4"
+redis = "^5.0.1"
+flower = "^2.0.1"
+timezonefinder = "^6.2.0"
+django-celery-beat = "^2.5.0"
+django-object-actions = "^4.2.0"
+
+[tool.poetry.group.test.dependencies]
+factory-boy = "^3.3.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 120
+src = ['src']
+select = [
+    "E", # pycodestyle
+    "F", # pyflakes
+    "N", # pep8-naming
+    "ASYNC", # flake8-async
+    "T20", # flake8-print
+]
+
+[tool.isort]
+known_first_party = ["abstract", "api", "cities", "core", "countries", "currencies", "weather", "setup"]
+
+[tool.black]
+line-length = 120

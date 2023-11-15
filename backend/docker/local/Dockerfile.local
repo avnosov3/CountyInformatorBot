@@ -1,0 +1,24 @@
+FROM python:3.10-slim
+
+ENV PYTHONDONTWRITEBYTECODE 1
+
+ENV PYTHONBUFFERED 1
+
+RUN mkdir /entry
+
+COPY ./docker/local/backend_entrypoint_local.sh /entry
+
+RUN chmod +x /entry/backend_entrypoint_local.sh
+
+WORKDIR /app
+
+RUN pip install poetry==1.5.1
+
+COPY ./pyproject.toml ./poetry.lock ./
+
+RUN poetry config virtualenvs.create false \
+    && poetry install
+
+RUN pip install debugpy==1.8.0 -t /tmp
+
+COPY ./src ./

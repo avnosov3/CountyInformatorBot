@@ -1,0 +1,35 @@
+version: '3.9'
+
+services:
+
+  db:
+    image: postgres:15.1-alpine
+    environment:
+      PGUSER: ${DB_USER}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres:/var/lib/postgresql/data/
+    ports:
+      - ${DB_PORT:-5432}:5432
+
+  adminer:
+    image: adminer:4.8.1-standalone
+    restart: always
+    ports:
+      - 8080:8080
+
+  redis:
+    image: redis:7.2.1-alpine
+    volumes:
+      - ylab-local-redis:/data/
+    ports:
+      - ${REDIS_PORT:-6379}:6379
+
+
+volumes:
+  postgres:
+    name: postgres
+  ylab-local-redis:
+    name: ylab-local-redis
